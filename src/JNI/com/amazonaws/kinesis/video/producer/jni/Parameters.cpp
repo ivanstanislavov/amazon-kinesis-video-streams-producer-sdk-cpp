@@ -1123,6 +1123,7 @@ BOOL setStreamEventMetadata(JNIEnv* env, jobject streamEventMetadata, PStreamEve
     STATUS retStatus = STATUS_SUCCESS;
     jmethodID methodId = NULL;
     CHECK(env != NULL && streamEventMetadata != NULL && pStreamEventMetadata != NULL);
+    const char *retChars;
 
     // Load KinesisVideoFrame
     jclass cls = env->GetObjectClass(streamEventMetadata);
@@ -1151,8 +1152,6 @@ BOOL setStreamEventMetadata(JNIEnv* env, jobject streamEventMetadata, PStreamEve
             retChars = env->GetStringUTFChars(retString, NULL);
             STRCPY(pStreamEventMetadata->imagePrefix, retChars);
             env->ReleaseStringUTFChars(retString, retChars);
-        } else {
-            pStreamInfo->imagePrefix[0] = '\0';
         }
     }
 
@@ -1164,7 +1163,7 @@ BOOL setStreamEventMetadata(JNIEnv* env, jobject streamEventMetadata, PStreamEve
         CHK_JVM_EXCEPTION(env);
     }
 
-    methodId = env->GetMethodID(cls, "getNames", "()Ljava/lang/String;");
+    methodId = env->GetMethodID(cls, "getNames", "()[Ljava/lang/String;");
     if (methodId == NULL) {
         DLOGW("Couldn't find method id getNames");
     } else {
@@ -1184,7 +1183,7 @@ BOOL setStreamEventMetadata(JNIEnv* env, jobject streamEventMetadata, PStreamEve
         }
     }
 
-    methodId = env->GetMethodID(cls, "getValues", "()Ljava/lang/String;");
+    methodId = env->GetMethodID(cls, "getValues", "()[Ljava/lang/String;");
     if (methodId == NULL) {
         DLOGW("Couldn't find method id getValues");
     } else {
